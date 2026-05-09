@@ -1,1 +1,14 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Angular
+node_modules/
+.angular/
+dist/
+
+# Basura / Temporales
+*.zip
 .env
