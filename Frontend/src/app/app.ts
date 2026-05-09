@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  template: `<h1>Hello from SafeTicket Frontend</h1>`,
-  styles: []
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
 })
-export class App {}
+// 👇 Fíjate que diga AppComponent
+export class AppComponent {
+  title = 'SafeTicket-Frontend';
+}
