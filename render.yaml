@@ -1,7 +1,20 @@
 services:
+  # Servidor de PRODUCCIÓN
   - type: web
     name: entrycipher-backend
     env: python
     plan: free
+    branch: main
+    healthCheckPath: /health  # <--- CONFIGURACIÓN AQUÍ
+    buildCommand: "pip install --upgrade pip && pip install --only-binary :all: -r Backend/requirements.txt"
+    startCommand: "cd Backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+
+  # Servidor de DESARROLLO
+  - type: web
+    name: entrycipher-backend-dev
+    env: python
+    plan: free
+    branch: develop
+    healthCheckPath: /health  # <--- CONFIGURACIÓN AQUÍ
     buildCommand: "pip install --upgrade pip && pip install --only-binary :all: -r Backend/requirements.txt"
     startCommand: "cd Backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
