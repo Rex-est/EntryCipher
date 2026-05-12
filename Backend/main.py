@@ -9,6 +9,12 @@ from app.tickets.domain.entities import Ticket
 
 Base.metadata.create_all(bind=engine)
 
+origins = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+    "http://localhost:5173",
+]
+
 app = FastAPI(
     title="SafeTicket Enterprise API",
     description="API Gateway y Core Services para la plataforma SafeTicket",
@@ -17,7 +23,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:4200"],
+    allow_origins=["*"], # 👈 Prueba con "*" solo para descartar que sea el origen
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
