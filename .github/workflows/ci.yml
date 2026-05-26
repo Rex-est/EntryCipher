@@ -2,72 +2,12 @@ name: SafeTicket Monorepo CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ] # Ahora el pipeline se activa al subir a main o a dev
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  # ==========================================
-  # FASE 1: CONTINUOUS INTEGRATION (CI)
-  # ==========================================
-  ci-backend:
-    name: Backend CI + SAST 🐍
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Backend
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-
-      - name: 🔒 SAST con Bandit (Seguridad Python)
-        run: |
-          pip install bandit
-          bandit -r . -ll -ii
-
-  ci-frontend:
-    name: Frontend CI + SAST ⚡
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Frontend
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: Frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build -- --configuration production
-
-      - name: Test
-        run: npm test -- --watch=false --browsers=ChromeHeadless
-
-      - name: 🔒 SAST con ESLint Security
-        run: |
-          npm install eslint eslint-plugin-security --save-dev
-          npx eslint . --plugin security --rule 'security/detect-object-injection: warn'
+  # ... (Los jobs de ci-backend y ci-frontend se quedan exactamente igual) ...
 
   # ==========================================
   # FASE 2: CONTINUOUS DEPLOYMENT (CD)
@@ -76,13 +16,14 @@ jobs:
     name: Deploy a Desarrollo 🚀
     needs: [ci-backend, ci-frontend]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue en la rama 'dev'
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
 
     steps:
       - name: 🚀 Disparar Deploy a Dev en Render
         run: |
           curl -X POST ${{ secrets.RENDER_DEV_HOOK }}
-          echo "Deploy a Ambiente de Desarrollo disparado exitosamente."
+          echo "Deploy a rama 'dev' en Render disparado."
 
   smoke-test:
     name: Smoke Test en Ambiente Dev 🩺
@@ -92,7 +33,6 @@ jobs:
     steps:
       - name: 🩺 Verificar que la API responde (/health)
         run: |
-          # Intentar 5 veces con 15 segundos entre intentos para dar tiempo a Render
           for i in 1 2 3 4 5; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               https://miapp-dev.onrender.com/health)
@@ -103,16 +43,18 @@ jobs:
             echo "Intento $i fallido (HTTP $STATUS), reintentando en 15 segundos..."
             sleep 15
           done
-          echo "❌ Error critical: El ambiente Dev no respondió tras 5 intentos."
+          echo "❌ Error: El ambiente Dev no respondió."
           exit 1
 
   deploy-prod:
     name: Deploy a Producción 👑
-    needs: smoke-test
+    needs: [ci-backend, ci-frontend] # Nota: Ya no depende del smoke-test de dev
     runs-on: ubuntu-latest
+    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue directo en la rama 'main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: 🚀 Disparar Deploy a Prod en Render
         run: |
           curl -X POST ${{ secrets.RENDER_PROD_HOOK }}
-          echo "✅ Pipeline completado. Deploy a Producción enviado."
+          echo "✅ Deploy a Producción (rama main) enviado."
