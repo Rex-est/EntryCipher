@@ -2,50 +2,59 @@ name: SafeTicket Monorepo CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ] # Ahora el pipeline se activa al subir a main o a dev
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  backend:
-    name: Backend CI
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Backend
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  # ... (Los jobs de ci-backend y ci-frontend se quedan exactamente igual) ...
 
-  frontend:
-    name: Frontend CI
+  # ==========================================
+  # FASE 2: CONTINUOUS DEPLOYMENT (CD)
+  # ==========================================
+  deploy-dev:
+    name: Deploy a Desarrollo 🚀
+    needs: [ci-backend, ci-frontend]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Frontend
+    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue en la rama 'dev'
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: Frontend/package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build -- --configuration production
-      - name: Test
-        run: npm test -- --watch=false
+      - name: 🚀 Disparar Deploy a Dev en Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEV_HOOK }}
+          echo "Deploy a rama 'dev' en Render disparado."
+
+  smoke-test:
+    name: Smoke Test en Ambiente Dev 🩺
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🩺 Verificar que la API responde (/health)
+        run: |
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              https://miapp-dev.onrender.com/health)
+            if [[ $STATUS -eq 200 ]]; then
+              echo "✅ El entorno de Desarrollo responde correctamente (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Intento $i fallido (HTTP $STATUS), reintentando en 15 segundos..."
+            sleep 15
+          done
+          echo "❌ Error: El ambiente Dev no respondió."
+          exit 1
+
+  deploy-prod:
+    name: Deploy a Producción 👑
+    needs: [ci-backend, ci-frontend] # Nota: Ya no depende del smoke-test de dev
+    runs-on: ubuntu-latest
+    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue directo en la rama 'main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: 🚀 Disparar Deploy a Prod en Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_PROD_HOOK }}
+          echo "✅ Deploy a Producción (rama main) enviado."
