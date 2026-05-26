@@ -2,28 +2,80 @@ name: SafeTicket Monorepo CI/CD
 
 on:
   push:
-    branches: [ main, develop ] # Ahora el pipeline se activa al subir a main o a dev
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
 
 jobs:
-  # ... (Los jobs de ci-backend y ci-frontend se quedan exactamente igual) ...
+  # ==========================================
+  # FASE 1: CONTINUOUS INTEGRATION (CI)
+  # ==========================================
+
+  ci-backend:
+    name: Tests + Análisis de Seguridad (Backend)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Configurar Python
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Instalar dependencias del proyecto
+      - name: Instalar dependencias
+        run: |
+          cd Backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Forzar instalación de Pytest y ejecutar pruebas
+      - name: Ejecutar tests
+        run: |
+          cd Backend
+          python -m pip install pytest
+          # --pass-on-empty evita que el pipeline falle si no tienes archivos test_ todavía
+          python -m pytest . -v --pass-on-empty
+
+      # 5. Análisis de Seguridad Estático (SAST) con Bandit
+      - name: 🔒 Análisis de seguridad (Bandit)
+        run: |
+          python -m pip install bandit
+          cd Backend
+          # -ll = reportar solo severidad MEDIA y ALTA
+          # -ii = reportar solo confianza MEDIA y ALTA
+          python -m bandit -r . -ll -ii --exclude ./tests
+
+  ci-frontend:
+    name: CI Frontend (Placeholder)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+      - name: Instalar dependencias y Build
+        run: |
+          echo "Aquí van los comandos de tu Frontend si los necesitas en el futuro"
 
   # ==========================================
   # FASE 2: CONTINUOUS DEPLOYMENT (CD)
   # ==========================================
+  
   deploy-dev:
     name: Deploy a Desarrollo 🚀
     needs: [ci-backend, ci-frontend]
     runs-on: ubuntu-latest
-    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue en la rama 'dev'
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    # Se ejecuta si los tests pasan Y si estás en la rama 'develop' (o si es un PR hacia ella)
+    if: (github.ref == 'refs/heads/develop' || github.base_ref == 'develop')
 
     steps:
       - name: 🚀 Disparar Deploy a Dev en Render
         run: |
           curl -X POST ${{ secrets.RENDER_DEV_HOOK }}
-          echo "Deploy a rama 'dev' en Render disparado."
+          echo "Deploy a rama 'develop' en Render disparado."
 
   smoke-test:
     name: Smoke Test en Ambiente Dev 🩺
@@ -48,9 +100,10 @@ jobs:
 
   deploy-prod:
     name: Deploy a Producción 👑
-    needs: [ci-backend, ci-frontend] # Nota: Ya no depende del smoke-test de dev
+    # CAMBIO CLAVE: Ahora producción espera estrictamente a que el Smoke Test de Dev sea exitoso
+    needs: [smoke-test] 
     runs-on: ubuntu-latest
-    # OJO: Solo se ejecuta si los tests pasaron Y si el push fue directo en la rama 'main'
+    # Solo se ejecuta de forma efectiva si los cambios se consolidan en la rama 'main'
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
