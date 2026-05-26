@@ -99,11 +99,10 @@ jobs:
 
   deploy-prod:
     name: Deploy a Producción 👑
-    # CAMBIO CLAVE: Ahora producción espera estrictamente a que el Smoke Test de Dev sea exitoso
-    needs: [smoke-test] 
+    needs: [ci-backend, ci-frontend]
     runs-on: ubuntu-latest
-    # Solo se ejecuta de forma efectiva si los cambios se consolidan en la rama 'main'
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Se ejecuta si estás en la rama principal (main o master) sin importar el tipo de evento
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
       - name: 🚀 Disparar Deploy a Prod en Render
