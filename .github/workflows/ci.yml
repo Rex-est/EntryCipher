@@ -2,9 +2,9 @@ name: SafeTicket Monorepo CI/CD
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   # ==========================================
@@ -68,7 +68,7 @@ jobs:
     needs: [ci-backend, ci-frontend]
     runs-on: ubuntu-latest
     # Se ejecuta si los tests pasan Y si estás en la rama 'develop' (o si es un PR hacia ella)
-    if: (github.ref == 'refs/heads/develop' || github.base_ref == 'develop')
+    if: (github.ref == 'refs/heads/main' || github.base_ref == 'main')
 
     steps:
       - name: 🚀 Disparar Deploy a Dev en Render
