@@ -13,12 +13,12 @@
       <div class="rounded-md shadow-sm -space-y-px">
         <div class="mb-2">
           <input name="email" type="email" required [(ngModel)]="credentials.email"
-            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
             placeholder="Correo electrónico">
         </div>
         <div>
           <input name="password" type="password" required [(ngModel)]="credentials.password"
-            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
             placeholder="Contraseña">
         </div>
       </div> <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
@@ -27,9 +27,15 @@
 
       <div>
         <button type="submit"
-          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
           Iniciar Sesión
         </button>
+      </div>
+
+      <div class="text-center mt-4">
+        <a routerLink="/register" class="font-medium text-rose-600 hover:text-rose-500 text-sm">
+          ¿No tienes cuenta? Regístrate aquí
+        </a>
       </div>
     </form>
   </div>

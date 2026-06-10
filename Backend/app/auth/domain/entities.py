@@ -16,3 +16,4 @@ class User(Base):
     dni = Column(String, unique=True, index=True, nullable=False)
     role = Column(Enum(RoleEnum), default=RoleEnum.USER)
     is_active = Column(Boolean, default=True)
+    last_jti = Column(String, nullable=True) # Para evitar multisesiones

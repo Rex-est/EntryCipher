@@ -1,0 +1,58 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Crea tu cuenta
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Únete a SafeTicket hoy mismo
+      </p>
+    </div>
+
+    <form class="mt-8 space-y-6" (ngSubmit)="onRegister()">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div class="mb-4">
+          <label for="full_name" class="sr-only">Nombre Completo</label>
+          <input name="full_name" type="text" required [(ngModel)]="user.full_name"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+            placeholder="Nombre completo">
+        </div>
+        <div class="mb-4">
+          <label for="dni" class="sr-only">DNI</label>
+          <input name="dni" type="text" required [(ngModel)]="user.dni"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+            placeholder="DNI (Documento Nacional de Identidad)">
+        </div>
+        <div class="mb-4">
+          <label for="email" class="sr-only">Correo electrónico</label>
+          <input name="email" type="email" required [(ngModel)]="user.email"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+            placeholder="Correo electrónico">
+        </div>
+        <div class="mb-4">
+          <label for="password" class="sr-only">Contraseña</label>
+          <input name="password" type="password" required [(ngModel)]="user.password"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+            placeholder="Contraseña">
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
+        {{ errorMessage }}
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="loading"
+          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-50">
+          {{ loading ? 'Registrando...' : 'Registrarse' }}
+        </button>
+      </div>
+
+      <div class="text-center mt-4">
+        <a routerLink="/login" class="font-medium text-rose-600 hover:text-rose-500 text-sm">
+          ¿Ya tienes cuenta? Inicia sesión
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
