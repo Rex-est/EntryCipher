@@ -20,19 +20,19 @@ services:
     startCommand: "cd Backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
 
   # Frontend de PRODUCCIÓN
-  - type: web
+  - type: static
     name: entrycipher-frontend
     env: static
     plan: free
     branch: main
-    publishPath: Frontend/dist/frontend/browser
-    buildCommand: "cd Frontend && npm install && npm run build"
+    publishPath: Frontend/dist/Frontend
+    buildCommand: "cd Frontend && npm install && npx ng build"
 
   # Frontend de DESARROLLO
-  - type: web
+  - type: static
     name: entrycipher-frontend-dev
     env: static
     plan: free
     branch: main
-    publishPath: Frontend/dist/frontend/browser
-    buildCommand: "cd Frontend && npm install && npm run build"
+    publishPath: Frontend/dist/Frontend
+    buildCommand: "cd Frontend && npm install && npx ng build"
