@@ -25,7 +25,14 @@ def authenticate_user(db: Session, user: UserLogin):
     access_token = security.create_access_token(
         data={"sub": db_user.email, "role": db_user.role.value}
     )
-    
+
+    # --- ANTI-MULTISESIÓN ---
+    # Extraemos el JTI generado para guardarlo como la sesión activa
+    from jose import jwt
+    decoded = jwt.decode(access_token, security.SECRET_KEY, algorithms=[security.ALGORITHM])
+    db_user.last_jti = decoded.get("jti")
+    db.commit()
+
     return {
         "access_token": access_token, 
         "token_type": "bearer", 

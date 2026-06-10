@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { tap } from 'rxjs/operators';
@@ -7,22 +7,32 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
 
   login(formData: FormData) {
     return this.http.post(`${this.apiUrl}/auth/login`, formData).pipe(
       tap((res: any) => {
-        // Guardamos los datos importantes en el navegador
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('user_role', res.role);
       })
     );
   }
 
-    logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user_role');
-}
+  register(userData: any) {
+    return this.http.post(`${this.apiUrl}/auth/register`, userData);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_role');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
 }

@@ -19,6 +19,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         # Desencriptamos el token
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
+        jti: str = payload.get("jti") # Nueva: ID de sesión
         if email is None:
             raise credentials_exception
     except JWTError:
@@ -28,6 +29,15 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.query(User).filter(User.email == email).first()
     if user is None:
         raise credentials_exception
+
+    # --- ANTI-MULTISESIÓN ---
+    # Si el JTI del token no coincide con el último guardado, la sesión expiró por otro inicio
+    if user.last_jti and jti != user.last_jti:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Tu sesión ha sido cerrada porque se inició sesión en otro dispositivo."
+        )
+
     return user
 
 # El guardián estricto: Solo deja pasar si eres ADMIN
