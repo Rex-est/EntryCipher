@@ -6,8 +6,6 @@ from app.auth.domain.entities import User
 from app.events.domain.entities import Event, EventZone, PricingTier
 from app.tickets.domain.entities import Ticket
 
-Base.metadata.create_all(bind=engine)
-
 origins = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
@@ -19,6 +17,10 @@ app = FastAPI(
     description="API Gateway y Core Services para la plataforma SafeTicket",
     version="1.0.0"
 )
+
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
