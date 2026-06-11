@@ -6,14 +6,10 @@ import os
 os.environ["PGCLIENTENCODING"] = "utf-8"
 
 # NOTA: En producción esto debe ir en variables de entorno (.env)
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./prod.db")
+# Por ahora usaremos una cadena de conexión local genérica
+SQLALCHEMY_DATABASE_URL = "postgresql://db_entrycipher_i0fm_user:VMaPBkJmTnBfOS7QmLhTF4d1Fc3d2hrD@dpg-d8kvol6rnols73c6qam0-a/db_entrycipher_i0fm"
 
-# Si es SQLite, necesitamos argumentos especiales
-if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-else:
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
