@@ -38,7 +38,7 @@ jobs:
         run: |
           cd Backend
           python -m pip install pytest pytest-cov pytest-custom-exit-code
-          python -m pytest --cov=app --cov-report=xml --cov-fail-under=80 . -v --suppress-no-test-exit-code
+          python -m pytest --cov=app --cov-report=xml --cov-fail-under=100 . -v --suppress-no-test-exit-code
 
       # 5. Análisis de Seguridad Estático (SAST) con Bandit
       - name: 🔒 Análisis de seguridad (Bandit)
