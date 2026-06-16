@@ -31,7 +31,10 @@ def authenticate_user(db: Session, user: UserLogin):
     from jose import jwt
     decoded = jwt.decode(access_token, security.SECRET_KEY, algorithms=[security.ALGORITHM])
     db_user.last_jti = decoded.get("jti")
+    db.add(db_user) 
+    
     db.commit()
+    db.refresh(db_user)
 
     return {
         "access_token": access_token, 
