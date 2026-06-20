@@ -4,10 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { TicketService, TicketResponse, DynamicQRResponse } from '../../../core/services/ticket.service';
 import { EventService, EventResponse } from '../../admin/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-my-tickets',
-  imports: [CommonModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, GlassCardComponent],
   templateUrl: './my-tickets.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,6 +22,7 @@ export class MyTicketsComponent implements OnInit {
   tickets = signal<TicketResponse[]>([]);
   events = signal<EventResponse[]>([]);
   qrData = signal<{ [key: string]: DynamicQRResponse }>({});
+  showMobileMenu = signal(false);
 
   ngOnInit() {
     this.ticketService.getMyTickets().subscribe(data => this.tickets.set(data));

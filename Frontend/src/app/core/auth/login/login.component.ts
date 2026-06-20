@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, GlassCardComponent],
   templateUrl: './login.component.html',
   styleUrls: []
 })

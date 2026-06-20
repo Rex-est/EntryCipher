@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-scanner',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, GlassCardComponent],
   templateUrl: './scanner.component.html'
 })
 export class ScannerComponent {

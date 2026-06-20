@@ -19,7 +19,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Token expirado o inválido -> Limpiar y mandar al login
+        // Mensaje específico del backend para multisesión
+        const detail = error.error?.detail;
+        if (detail && detail.includes('otro dispositivo')) {
+          alert('🚫 SESIÓN CERRADA: Se ha detectado un nuevo inicio de sesión en otro dispositivo. Por seguridad, esta sesión se cerrará.');
+        } else {
+          // Opcional: mensaje general para otros casos de 401
+          console.warn('Sesión expirada o no autorizada');
+        }
+
         authService.logout();
         router.navigate(['/login']);
       }

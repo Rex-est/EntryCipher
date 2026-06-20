@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { EventService, EventResponse } from '../../admin/services/event.service';
 import { TicketService } from '../../../core/services/ticket.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-event-details',
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, GlassCardComponent],
   templateUrl: './event-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -23,6 +25,7 @@ export class EventDetailsComponent implements OnInit {
   selectedZone = signal<any>(null);
   purchaseSuccess = signal(false);
   purchaseError = signal('');
+  showMobileMenu = signal(false);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');

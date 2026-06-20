@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { EventService, EventResponse } from '../../admin/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-client-dashboard',
-  imports: [CommonModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, GlassCardComponent],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -18,6 +20,7 @@ export class ClientDashboardComponent implements OnInit {
   events = signal<EventResponse[]>([]);
   loading = signal(true);
   error = signal('');
+  showMobileMenu = signal(false);
 
   ngOnInit() {
     this.eventService.getEvents().subscribe({
