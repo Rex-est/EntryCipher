@@ -1,21 +1,31 @@
-<div class="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
-  <h1 class="text-3xl font-bold mb-8 text-green-500 font-mono">ENTRY-CIPHER SCANNER v1.0</h1>
+<!-- Liquid Background -->
+<div class="liquid-bg !bg-black">
+  <div class="blob w-96 h-96 bg-green-900/20 top-0 -left-20 animate-blob"></div>
+  <div class="blob w-96 h-96 bg-blue-900/20 bottom-0 -right-20 animate-blob [animation-delay:2s]"></div>
+</div>
+
+<div class="min-h-screen text-white flex flex-col items-center justify-center p-6 relative z-10">
+  <h1 class="text-3xl font-black mb-8 text-green-500 font-mono tracking-tighter">ENTRY-CIPHER SCANNER v1.0</h1>
   
-  <div class="w-full max-w-md bg-gray-900 p-8 rounded-2xl border-2 border-green-900 shadow-2xl">
-    <label class="block text-sm font-mono mb-2">SCAN O INGRESA CÓDIGO:</label>
-    <input [(ngModel)]="ticketCode" 
-           class="w-full p-4 bg-black border border-green-500 rounded text-green-400 text-2xl text-center focus:ring-2 focus:ring-green-300 outline-none mb-6"
-           placeholder="X-999-ABC">
+  <app-glass-card [radius]="32" 
+                  backgroundColor="rgba(0, 0, 0, 0.4)"
+                  class="w-full max-w-md border-2 !border-green-900 shadow-2xl">
+    <div class="p-8">
+      <label class="block text-xs font-mono mb-4 text-green-700 font-bold uppercase tracking-widest text-center">SCAN O INGRESA CÓDIGO:</label>
+      <input [(ngModel)]="ticketCode" 
+             class="w-full p-4 bg-black/40 border border-green-500/30 rounded-2xl text-green-400 text-2xl text-center focus:ring-4 focus:ring-green-500/20 outline-none mb-6 font-mono"
+             placeholder="X-999-ABC">
 
-    <button (click)="validarTicket()" 
-            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all">
-      VALIDAR ENTRADA
-    </button>
+      <button (click)="validarTicket()" 
+              class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-green-900/20 active:scale-95">
+        VALIDAR ENTRADA
+      </button>
 
-    <div *ngIf="statusMessage" 
-         [ngClass]="isSuccess ? 'bg-green-900 border-green-500' : 'bg-red-900 border-red-500'"
-         class="mt-6 p-4 border-2 rounded-lg text-center animate-pulse">
-      <p class="text-xl font-bold">{{ statusMessage }}</p>
+      <div *ngIf="statusMessage" 
+           [ngClass]="isSuccess ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'"
+           class="mt-6 p-6 border-2 rounded-2xl text-center animate-in zoom-in duration-300 backdrop-blur-md">
+        <p class="text-xl font-black font-mono">{{ statusMessage }}</p>
+      </div>
     </div>
-  </div>
+  </app-glass-card>
 </div>

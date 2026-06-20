@@ -1,4 +1,4 @@
 export const environment = {
-  production: true, // Cámbialo a true para producción
+  production: true,
   apiUrl: 'https://entrycipher-back-prod.onrender.com/api/v1'
 };

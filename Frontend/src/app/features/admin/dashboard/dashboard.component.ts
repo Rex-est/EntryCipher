@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { EventService, EventResponse, EventCreate, EventZone, PricingTier } from '../services/event.service';
 import { AdminService, DashboardAnalytics, Buyer } from '../services/admin.service';
+import { GlassCardComponent } from '../../../shared/components/glass-card/glass-card.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, GlassCardComponent],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit {
   // UI State
   activeTab: 'dashboard' | 'events' | 'users' = 'dashboard';
   showCreatorModal = false;
+  showMobileMenu = false;
   currentStep = 1;
 
   // Formulario Avanzado para nuevo evento
