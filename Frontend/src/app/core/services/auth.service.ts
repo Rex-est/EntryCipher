@@ -13,8 +13,8 @@ export class AuthService {
   login(formData: FormData) {
     return this.http.post(`${this.apiUrl}/auth/login`, formData).pipe(
       tap((res: any) => {
-        localStorage.setItem('token', res.access_token);
-        localStorage.setItem('user_role', res.role);
+        sessionStorage.setItem('token', res.access_token);
+        sessionStorage.setItem('user_role', res.role);
       })
     );
   }
@@ -24,12 +24,12 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_role');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user_role');
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
 
   isLoggedIn(): boolean {

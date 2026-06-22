@@ -14,7 +14,7 @@ describe('authGuard', () => {
       ]
     });
     router = TestBed.inject(Router);
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   it('debe bloquear el acceso si no hay token', () => {
@@ -28,8 +28,8 @@ describe('authGuard', () => {
   });
 
   it('debe permitir acceso si el rol coincide', () => {
-    localStorage.setItem('token', 'fake-token');
-    localStorage.setItem('user_role', 'ADMIN');
+    sessionStorage.setItem('token', 'fake-token');
+    sessionStorage.setItem('user_role', 'ADMIN');
     
     const route = { data: { role: 'ADMIN' } } as any;
     const state = {} as RouterStateSnapshot;
@@ -40,8 +40,8 @@ describe('authGuard', () => {
   });
 
   it('debe bloquear acceso si el rol NO coincide', () => {
-    localStorage.setItem('token', 'fake-token');
-    localStorage.setItem('user_role', 'USER'); // Rol equivocado
+    sessionStorage.setItem('token', 'fake-token');
+    sessionStorage.setItem('user_role', 'USER'); // Rol equivocado
     
     const route = { data: { role: 'ADMIN' } } as any;
     const state = {} as RouterStateSnapshot;
