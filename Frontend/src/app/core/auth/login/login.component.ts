@@ -32,7 +32,7 @@ export class LoginComponent {
     this.authService.login(formData).subscribe({
       next: () => {
         console.log('¡Acceso concedido!');
-        const role = localStorage.getItem('user_role');
+        const role = sessionStorage.getItem('user_role');
         
         // Redirección según rol
         if (role === 'ADMIN') this.router.navigate(['/admin']);
