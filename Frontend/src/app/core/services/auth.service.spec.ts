@@ -15,7 +15,7 @@ describe('AuthService', () => {
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -28,8 +28,8 @@ describe('AuthService', () => {
 
     service.login(formData).subscribe(res => {
       expect(res).toEqual(mockRes);
-      expect(localStorage.getItem('token')).toBe('fake-token');
-      expect(localStorage.getItem('user_role')).toBe('USER');
+      expect(sessionStorage.getItem('token')).toBe('fake-token');
+      expect(sessionStorage.getItem('user_role')).toBe('USER');
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
@@ -38,23 +38,23 @@ describe('AuthService', () => {
   });
 
   it('debe cerrar sesión y limpiar el storage', () => {
-    localStorage.setItem('token', 'old-token');
-    localStorage.setItem('user_role', 'ADMIN');
+    sessionStorage.setItem('token', 'old-token');
+    sessionStorage.setItem('user_role', 'ADMIN');
     
     service.logout();
     
-    expect(localStorage.getItem('token')).toBeNull();
-    expect(localStorage.getItem('user_role')).toBeNull();
+    expect(sessionStorage.getItem('token')).toBeNull();
+    expect(sessionStorage.getItem('user_role')).toBeNull();
   });
 
   it('debe obtener el token correctamente', () => {
-    localStorage.setItem('token', 'xyz');
+    sessionStorage.setItem('token', 'xyz');
     expect(service.getToken()).toBe('xyz');
   });
 
   it('debe verificar si está logueado', () => {
     expect(service.isLoggedIn()).toBe(false);
-    localStorage.setItem('token', 'xyz');
+    sessionStorage.setItem('token', 'xyz');
     expect(service.isLoggedIn()).toBe(true);
   });
 });
