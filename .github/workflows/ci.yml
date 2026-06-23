@@ -82,7 +82,7 @@ jobs:
       - name: Ejecutar Pruebas Unitarias y Cobertura (mínimo 75%)
         run: |
           cd Frontend
-          npx ng test --coverage --watch=false
+          npx vitest run --coverage
 
       - name: Upload Frontend coverage to Codecov
         uses: codecov/codecov-action@v4
