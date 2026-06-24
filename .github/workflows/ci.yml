@@ -129,9 +129,33 @@ jobs:
           echo "❌ Error: El ambiente Dev no respondió."
           exit 1
 
+  dast-security:
+    name: 🎯 DAST — OWASP ZAP (Security Scan)
+    needs: [smoke-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🔍 ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          # APUNTAR A LA URL DE TU ENTORNO DEV
+          target: 'https://entrycipher-front-dev.onrender.com'
+          rules_file_name: '.zap/rules.tsv'
+          fail_action: true    # Esto detendrá el pipeline si detecta High/Medium
+          artifact_name: 'zap-report'
+
+      - name: 📊 Subir reporte ZAP
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-report
+          path: report_html.html
+
   deploy-prod:
     name: Deploy a Producción 👑
-    needs: [smoke-test] 
+    needs: [dast-security] 
     runs-on: ubuntu-latest
 
     steps:
