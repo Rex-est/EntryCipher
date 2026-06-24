@@ -142,7 +142,7 @@ jobs:
         with:
           # APUNTAR A LA URL DE TU ENTORNO DEV
           target: 'https://entrycipher-front-dev.onrender.com'
-          rules_file_name: '.zap/rules.tsv'
+          rules_file_name: 'rules.tsv'
           fail_action: true    # Esto detendrá el pipeline si detecta High/Medium
           artifact_name: 'zap-report'
 
