@@ -1,36 +1,54 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
-    <div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-        SafeTicket Enterprise
-      </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
-        Ingresa a tu panel de control
-      </p>
-    </div>
+<!-- Liquid Background -->
+<div class="liquid-bg">
+  <div class="blob w-[500px] h-[500px] bg-rose-300 top-0 -left-20 animate-blob"></div>
+  <div class="blob w-[500px] h-[500px] bg-blue-300 bottom-0 -right-20 animate-blob [animation-delay:2s]"></div>
+  <div class="blob w-[500px] h-[500px] bg-purple-300 top-1/2 left-1/3 animate-blob [animation-delay:4s]"></div>
+</div>
 
-    <form class="mt-8 space-y-6" (ngSubmit)="onLogin()">
-      <div class="rounded-md shadow-sm -space-y-px">
-        <div class="mb-2">
-          <input name="email" type="email" required [(ngModel)]="credentials.email"
-            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Correo electrónico">
-        </div>
-        <div>
-          <input name="password" type="password" required [(ngModel)]="credentials.password"
-            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Contraseña">
-        </div>
-      </div> <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
-        {{ errorMessage }}
-      </div>
-
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+  <app-glass-card [radius]="40" class="max-w-md w-full">
+    <div class="p-10 space-y-8">
       <div>
-        <button type="submit"
-          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Iniciar Sesión
-        </button>
+        <div class="w-20 h-20 bg-rose-600 rounded-3xl mx-auto flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-rose-500/20 animate-bounce">S</div>
+        <h2 class="mt-6 text-center text-4xl font-black text-slate-900 tracking-tighter">
+          SafeTicket
+        </h2>
+        <p class="mt-2 text-center text-sm text-slate-500 font-medium uppercase tracking-widest">
+          Acceso de Compradores
+        </p>
       </div>
-    </form>
-  </div>
+
+      <form class="mt-8 space-y-6" (ngSubmit)="onLogin()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">Email</label>
+            <input name="email" type="email" required [(ngModel)]="credentials.email"
+              class="w-full px-6 py-4 bg-white/40 border-none rounded-2xl focus:ring-4 ring-rose-100 transition-all font-medium text-slate-800"
+              placeholder="nombre@ejemplo.com">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">Contraseña</label>
+            <input name="password" type="password" required [(ngModel)]="credentials.password"
+              class="w-full px-6 py-4 bg-white/40 border-none rounded-2xl focus:ring-4 ring-rose-100 transition-all font-medium text-slate-800"
+              placeholder="••••••••">
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="bg-red-500/10 p-4 rounded-xl text-red-600 text-xs font-bold text-center border border-red-500/20 backdrop-blur-md">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit"
+          class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-rose-600 transition-all shadow-xl shadow-black/10 active:scale-95 uppercase tracking-widest">
+          Ingresar al Portal
+        </button>
+
+        <div class="text-center mt-6">
+          <a routerLink="/register" class="font-bold text-rose-600 hover:text-rose-700 text-sm transition-colors">
+            ¿No tienes cuenta? Regístrate aquí →
+          </a>
+        </div>
+      </form>
+    </div>
+  </app-glass-card>
 </div>

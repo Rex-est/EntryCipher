@@ -12,8 +12,8 @@ router = APIRouter()
 
 @router.post("/buy", response_model=TicketResponse, summary="Comprar una entrada")
 def purchase_ticket(data: TicketPurchase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # Usamos el ID del usuario que viene en el Token JWT
-    return ticket_service.buy_ticket(db, data.event_id, current_user.id)
+    # Pasamos el event_id, user_id y zone_id a la lógica de negocio
+    return ticket_service.buy_ticket(db, data.event_id, current_user.id, data.zone_id)
 
 @router.get("/my-tickets", response_model=List[TicketResponse], summary="Ver mis entradas compradas")
 def list_my_tickets(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

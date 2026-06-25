@@ -1,25 +1,381 @@
-<div class="min-h-screen bg-gray-100 p-8">
-  <nav class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow">
-    <h1 class="text-2xl font-bold text-indigo-600">SafeTicket Admin Panel</h1>
-    <button (click)="logout()" class="bg-red-500 text-white px-4 py-2 rounded">Cerrar Sesión</button>
-  </nav>
+<!-- Liquid Background -->
+<div class="liquid-bg">
+  <div class="blob w-[500px] h-[500px] bg-slate-200 top-0 -left-20 animate-blob"></div>
+  <div class="blob w-[500px] h-[500px] bg-rose-100 bottom-0 -right-20 animate-blob [animation-delay:2s]"></div>
+</div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
-      <h3 class="text-gray-500 text-sm font-medium">Eventos Activos</h3>
-      <p class="text-3xl font-bold">12</p>
+<div class="min-h-screen flex flex-col lg:flex-row relative z-10">
+  
+  <!-- Mobile Header -->
+  <header class="lg:hidden glass-nav !bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-[60]">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 bg-rose-500 rounded-lg flex items-center justify-center font-bold text-lg">S</div>
+      <span class="text-xl font-black tracking-tight">SafeTicket</span>
+    </div>
+    <button (click)="showMobileMenu = !showMobileMenu" class="p-2 text-slate-300">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path *ngIf="!showMobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        <path *ngIf="showMobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside [class.hidden]="!showMobileMenu && true" 
+         [class.flex]="showMobileMenu"
+         class="w-full lg:w-72 bg-slate-900/95 backdrop-blur-xl text-white flex-shrink-0 lg:flex flex-col shadow-2xl fixed lg:sticky top-0 lg:top-0 h-full lg:h-screen z-50 lg:z-40 transition-all border-r border-white/5">
+    <div class="p-8 border-b border-white/5 hidden lg:flex items-center space-x-3">
+      <div class="w-10 h-10 bg-rose-500 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-rose-500/20">S</div>
+      <span class="text-2xl font-black tracking-tight">SafeTicket</span>
     </div>
     
-    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-      <h3 class="text-gray-500 text-sm font-medium">Tickets Vendidos</h3>
-      <p class="text-3xl font-bold">1,250</p>
-    </div>
-  </div>
+    <nav class="flex-grow p-6 space-y-4 overflow-y-auto">
+      <button (click)="activeTab = 'dashboard'; showMobileMenu = false" [class.bg-rose-600]="activeTab === 'dashboard'" 
+              class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 text-left">
+        <span>📊</span><span class="font-medium">Dashboard Live</span>
+      </button>
+      <button (click)="activeTab = 'events'; showMobileMenu = false" [class.bg-rose-600]="activeTab === 'events'"
+              class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 text-left">
+        <span>🎫</span><span class="font-medium">Gestión de Eventos</span>
+      </button>
+      <button (click)="activeTab = 'users'; showMobileMenu = false" [class.bg-rose-600]="activeTab === 'users'"
+              class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 text-left">
+        <span>👥</span><span class="font-medium">Base de Compradores</span>
+      </button>
+    </nav>
 
-  <div class="mt-10">
-    <h2 class="text-xl font-semibold mb-4">Acciones Rápidas</h2>
-    <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
-      + Crear Nuevo Evento
-    </button>
+    <div class="p-6 border-t border-white/5">
+      <div class="bg-white/5 rounded-2xl p-4 mb-4 border border-white/5">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Admin Session</p>
+        <p class="text-sm font-semibold truncate">admin@safeticket.com</p>
+      </div>
+      <button (click)="logout()" class="w-full py-3 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-bold rounded-xl transition-all">
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-grow p-4 lg:p-10 overflow-y-auto h-[calc(100vh-64px)] lg:h-screen">
+    
+    <!-- DASHBOARD TAB -->
+    <div *ngIf="activeTab === 'dashboard'" class="space-y-8 animate-in fade-in duration-500">
+      <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl lg:text-4xl font-black text-slate-800 tracking-tight">Sala de Control</h1>
+          <p class="text-slate-500 font-medium mt-1 text-sm lg:text-base">Monitoreo en tiempo real de ventas y finanzas.</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+          <span class="text-green-600 font-bold text-xs lg:text-sm uppercase tracking-widest">Live Updates</span>
+        </div>
+      </header>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <app-glass-card [radius]="24" class="group hover:shadow-xl transition-all">
+          <div class="p-6">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-2">Ingresos Brutos</p>
+            <p class="text-2xl lg:text-3xl font-black text-rose-600">${{ analytics?.revenue | number:'1.2-2' }}</p>
+            <div class="mt-4 flex items-center text-[10px] font-bold text-green-500 bg-green-50/50 px-2 py-1 rounded-lg w-fit">
+              ↑ 12% vs ayer
+            </div>
+          </div>
+        </app-glass-card>
+        <app-glass-card [radius]="24" class="group hover:shadow-xl transition-all">
+          <div class="p-6">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-2">Tickets Vendidos</p>
+            <p class="text-2xl lg:text-3xl font-black text-emerald-600">{{ analytics?.total_sales }}</p>
+            <div class="mt-4 flex items-center text-[10px] font-bold text-blue-500 bg-blue-50/50 px-2 py-1 rounded-lg w-fit">
+              En 12 eventos
+            </div>
+          </div>
+        </app-glass-card>
+        <app-glass-card [radius]="24" class="group hover:shadow-xl transition-all">
+          <div class="p-6">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-2">Comisiones (Est.)</p>
+            <p class="text-2xl lg:text-3xl font-black text-amber-500">${{ (analytics?.revenue || 0) * 0.1 | number:'1.2-2' }}</p>
+            <p class="mt-4 text-[10px] font-medium text-slate-400">Basado en fee del 10%</p>
+          </div>
+        </app-glass-card>
+        <app-glass-card [radius]="24" class="group hover:shadow-xl transition-all">
+          <div class="p-6">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-2">Eventos Activos</p>
+            <p class="text-2xl lg:text-3xl font-black text-blue-600">{{ analytics?.active_events }}</p>
+            <button (click)="activeTab = 'events'" class="mt-4 text-[10px] font-bold text-rose-500 hover:underline">Gestionar todos →</button>
+          </div>
+        </app-glass-card>
+      </div>
+
+      <!-- Chart & Details -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <app-glass-card [radius]="32" class="lg:col-span-2">
+          <div class="p-6 lg:p-8">
+            <h3 class="text-lg lg:text-xl font-bold mb-6 flex items-center space-x-2">
+              <span>📈</span><span>Velocidad de Ventas</span>
+            </h3>
+            <div class="h-48 lg:h-64 flex items-end space-x-1 lg:space-x-2">
+              <div *ngFor="let point of analytics?.sales_velocity" 
+                   class="bg-rose-500 rounded-t-lg flex-grow hover:bg-rose-600 transition-all cursor-help relative group"
+                   [style.height.%]="(point.sales / 50) * 100">
+                 <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-2 py-1 rounded text-[10px] opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap z-10">
+                   {{ point.sales }} boletos
+                 </div>
+              </div>
+            </div>
+            <div class="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <span>Hace 5 días</span>
+              <span>Hoy</span>
+            </div>
+          </div>
+        </app-glass-card>
+        <div class="bg-rose-900 text-white p-6 lg:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+          <div class="relative z-10">
+            <h3 class="text-lg lg:text-xl font-bold mb-4">Acciones Rápidas</h3>
+            <div class="space-y-3 lg:space-y-4">
+              <button (click)="openCreator()" class="w-full bg-white text-rose-900 font-black py-3 lg:py-4 rounded-xl lg:rounded-2xl hover:bg-rose-50 transition-all flex items-center justify-center space-x-2 text-sm lg:text-base">
+                <span>➕</span><span>CREAR NUEVO EVENTO</span>
+              </button>
+              <button class="w-full bg-rose-800 text-white font-bold py-3 lg:py-4 rounded-xl lg:rounded-2xl hover:bg-rose-700 transition-all flex items-center justify-center space-x-2 text-sm lg:text-base">
+                <span>📑</span><span>REPORTES PDF</span>
+              </button>
+            </div>
+          </div>
+          <!-- Decorative circle -->
+          <div class="absolute -bottom-20 -right-20 w-48 lg:w-64 h-48 lg:h-64 bg-rose-500/20 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS TAB -->
+    <div *ngIf="activeTab === 'events'" class="space-y-8 animate-in slide-in-from-right duration-500">
+      <header class="flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-black text-slate-800 tracking-tight">Eventos</h1>
+          <p class="text-slate-500 font-medium">Anatomía y configuración de localidades.</p>
+        </div>
+        <button (click)="openCreator()" class="bg-rose-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-rose-200 hover:scale-105 transition-all">
+          + NUEVO EVENTO
+        </button>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <app-glass-card *ngFor="let ev of events" [radius]="32" class="overflow-hidden hover:shadow-xl transition-all">
+          <div class="h-40 bg-slate-200 relative">
+            <!-- Imagen de Banner -->
+            <img *ngIf="ev.banner_url" [src]="ev.banner_url" class="w-full h-full object-cover" alt="Banner del evento">
+            <div *ngIf="!ev.banner_url" class="w-full h-full bg-rose-100 flex items-center justify-center text-rose-300 text-4xl font-black">
+              {{ ev.name.substring(0, 1) }}
+            </div>
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <span class="px-2 py-1 bg-rose-500 rounded text-[10px] font-bold uppercase mb-1 inline-block">{{ ev.category }}</span>
+              <h3 class="text-xl font-black">{{ ev.name }}</h3>
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="flex items-center text-sm text-slate-500 font-medium space-x-2">
+              <span>📍</span><span>{{ ev.location }}</span>
+            </div>
+            <div class="flex items-center text-sm text-slate-500 font-medium space-x-2">
+              <span>📅</span><span>{{ ev.date | date:'medium' }}</span>
+            </div>
+            
+            <!-- Zonas Summary -->
+            <div class="pt-4 border-t border-slate-100">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Zonas Configuradas</p>
+              <div class="flex flex-wrap gap-2">
+                <span *ngFor="let z of ev.zones" class="px-2 py-1 bg-white/50 text-slate-600 text-xs font-bold rounded-lg border border-slate-200">
+                  {{ z.name }} ({{ z.total_capacity }})
+                </span>
+              </div>
+            </div>
+          </div>
+        </app-glass-card>
+      </div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div *ngIf="activeTab === 'users'" class="space-y-8 animate-in slide-in-from-bottom duration-500">
+      <header>
+        <h1 class="text-4xl font-black text-slate-800 tracking-tight">Compradores</h1>
+        <p class="text-slate-500 font-medium">Validación de identidad y estado de cuenta.</p>
+      </header>
+
+      <app-glass-card [radius]="32" class="overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900/5 text-slate-400 text-xs font-bold uppercase tracking-widest">
+                <th class="px-8 py-6">ID</th>
+                <th class="px-8 py-6">Usuario / Email</th>
+                <th class="px-8 py-6">DNI / ID</th>
+                <th class="px-8 py-6">Estado</th>
+                <th class="px-8 py-6">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr *ngFor="let u of buyers" class="hover:bg-white/40 transition-all group">
+                <td class="px-8 py-6 text-slate-400 font-mono text-sm">#{{ u.id }}</td>
+                <td class="px-8 py-6">
+                  <p class="font-bold text-slate-800">{{ u.email }}</p>
+                </td>
+                <td class="px-8 py-6">
+                  <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold font-mono">{{ u.dni }}</span>
+                </td>
+                <td class="px-8 py-6">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
+                        [ngClass]="u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                    {{ u.is_active ? 'Verificado' : 'Suspendido' }}
+                  </span>
+                </td>
+                <td class="px-8 py-6">
+                  <button (click)="toggleUserStatus(u)" 
+                          [class]="u.is_active ? 'bg-red-500/10 text-red-500 hover:bg-red-500' : 'bg-green-500/10 text-green-500 hover:bg-green-500'"
+                          class="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:text-white">
+                    {{ u.is_active ? 'Suspender' : 'Activar' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </app-glass-card>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADVANCED EVENT CREATOR MODAL (Stepper) -->
+<div *ngIf="showCreatorModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 lg:p-4 z-[100] overflow-y-auto">
+  <div class="bg-white/90 backdrop-blur-2xl rounded-3xl lg:rounded-[40px] w-full max-w-4xl shadow-2xl overflow-hidden animate-in zoom-in duration-300 my-auto border border-white/20">
+    <div class="flex flex-col lg:flex-row h-auto lg:h-[700px]">
+      
+      <!-- Stepper Sidebar -->
+      <div class="w-full lg:w-64 bg-rose-600 p-6 lg:p-10 text-white flex flex-row lg:flex-col justify-between items-center lg:items-start">
+        <div class="lg:w-full">
+          <h3 class="text-lg lg:text-2xl font-black leading-tight mb-0 lg:mb-8 hidden lg:block">Anatomía del Evento</h3>
+          <div class="flex flex-row lg:flex-col space-x-4 lg:space-x-0 lg:space-y-8">
+            <div class="flex items-center space-x-2 lg:space-x-4" [class.opacity-50]="currentStep !== 1">
+              <div class="w-6 h-6 lg:w-8 lg:h-8 rounded-full border-2 border-white flex items-center justify-center font-bold text-xs lg:text-base">1</div>
+              <span class="font-bold text-xs lg:text-base hidden sm:inline">Base</span>
+            </div>
+            <div class="flex items-center space-x-2 lg:space-x-4" [class.opacity-50]="currentStep !== 2">
+              <div class="w-6 h-6 lg:w-8 lg:h-8 rounded-full border-2 border-white flex items-center justify-center font-bold text-xs lg:text-base">2</div>
+              <span class="font-bold text-xs lg:text-base hidden sm:inline">Zonas</span>
+            </div>
+            <div class="flex items-center space-x-2 lg:space-x-4" [class.opacity-50]="currentStep !== 3">
+              <div class="w-6 h-6 lg:w-8 lg:h-8 rounded-full border-2 border-white flex items-center justify-center font-bold text-xs lg:text-base">3</div>
+              <span class="font-bold text-xs lg:text-base hidden sm:inline">Precios</span>
+            </div>
+          </div>
+        </div>
+        <button (click)="showCreatorModal = false" class="text-rose-200 font-bold hover:text-white transition-all text-[10px] lg:text-sm uppercase tracking-widest mt-0 lg:mt-4">Descartar</button>
+      </div>
+
+      <!-- Steps Content -->
+      <div class="flex-grow flex flex-col min-h-0">
+        <div class="flex-grow p-6 lg:p-12 overflow-y-auto max-h-[60vh] lg:max-h-none">
+          
+          <!-- STEP 1: Metadata -->
+          <div *ngIf="currentStep === 1" class="space-y-6">
+            <h2 class="text-xl lg:text-3xl font-black text-slate-800 mb-4 lg:mb-8">Configuración Inicial</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nombre del Evento</label>
+                <input [(ngModel)]="newEvent.name" name="eventName" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">URL del Banner (Imagen)</label>
+                <input [(ngModel)]="newEvent.banner_url" name="bannerUrl" placeholder="https://ejemplo.com/banner.jpg" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Descripción Corta</label>
+                <textarea [(ngModel)]="newEvent.description" name="eventDesc" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium h-24"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Categoría</label>
+                <select [(ngModel)]="newEvent.category" name="eventCat" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium">
+                  <option>Concierto</option><option>Teatro</option><option>Deportes</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Fecha del Evento</label>
+                <input type="datetime-local" [(ngModel)]="newEvent.date" name="eventDate" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium">
+              </div>
+              
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Lugar / Location</label>
+                <input [(ngModel)]="newEvent.location" name="eventLoc" placeholder="Estadio Nacional, Lima" class="w-full bg-slate-50 border-none rounded-2xl p-4 focus:ring-4 ring-rose-100 transition-all font-medium">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Zonas -->
+          <div *ngIf="currentStep === 2" class="space-y-6">
+            <div class="flex justify-between items-center mb-4 lg:mb-8">
+              <h2 class="text-xl lg:text-3xl font-black text-slate-800">Mapa de Zonas</h2>
+              <button (click)="addZone()" class="bg-rose-100 text-rose-600 px-4 py-2 rounded-xl font-bold hover:bg-rose-200 transition-all text-sm"> + Zona</button>
+            </div>
+
+            <div *ngFor="let zone of newEvent.zones; let i = index" class="bg-slate-50 p-4 lg:p-6 rounded-2xl lg:rounded-3xl border border-slate-200 relative mb-4">
+              <button (click)="removeZone(i)" class="absolute top-4 right-4 text-red-400 hover:text-red-600 font-bold">✖</button>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nombre (ej: VIP)</label>
+                  <input [(ngModel)]="zone.name" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Capacidad</label>
+                  <input type="number" [(ngModel)]="zone.total_capacity" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm">
+                </div>
+                <div class="md:col-span-2 flex items-center space-x-3">
+                  <input type="checkbox" [(ngModel)]="zone.is_numbered" class="w-5 h-5 rounded-lg text-rose-600">
+                  <span class="text-sm font-bold text-slate-600">¿Asientos Numerados?</span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="newEvent.zones?.length === 0" class="text-center py-10 lg:py-20 text-slate-400 italic">No has definido zonas aún.</div>
+          </div>
+
+          <!-- STEP 3: Tiers -->
+          <div *ngIf="currentStep === 3" class="space-y-6">
+            <h2 class="text-xl lg:text-3xl font-black text-slate-800 mb-4 lg:mb-8">Estrategia de Precios</h2>
+            <div *ngFor="let zone of newEvent.zones" class="mb-8 border-b border-slate-100 pb-8 last:border-0">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="font-black text-rose-600 uppercase tracking-widest text-xs lg:text-sm">Zona: {{ zone.name }}</h4>
+                <button (click)="addTier(zone)" class="text-[10px] bg-slate-100 px-3 py-1 rounded-lg font-bold hover:bg-slate-200 transition-all">Añadir Fase</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div *ngFor="let tier of zone.tiers" class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                  <input [(ngModel)]="tier.name" placeholder="Fase (ej: Early Bird)" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-slate-400 text-xs">$</span>
+                    <input type="number" [(ngModel)]="tier.price" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                  </div>
+                  <input type="number" [(ngModel)]="tier.stock_limit" placeholder="Cupo" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                </div>
+                <div *ngIf="zone.tiers.length === 0" class="col-span-full py-4 text-center text-xs text-slate-400 italic">Añade al menos una fase de precio.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-6 lg:p-12 border-t border-slate-100 flex justify-between bg-white/50">
+          <button (click)="prevStep()" [disabled]="currentStep === 1" class="px-4 lg:px-8 py-3 lg:py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl disabled:opacity-30 text-sm lg:text-base">Anterior</button>
+          
+          <button *ngIf="currentStep < 3" (click)="nextStep()" class="px-4 lg:px-8 py-3 lg:py-4 bg-slate-900 text-white font-bold rounded-2xl hover:scale-105 transition-all text-sm lg:text-base">Siguiente</button>
+          
+          <button *ngIf="currentStep === 3" (click)="onCreateEvent()" class="px-6 lg:px-12 py-3 lg:py-4 bg-rose-600 text-white font-black rounded-2xl shadow-xl shadow-rose-100 hover:scale-105 transition-all text-sm lg:text-base uppercase">Publicar</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

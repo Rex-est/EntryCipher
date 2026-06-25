@@ -1,0 +1,113 @@
+<!-- Liquid Background -->
+<div class="liquid-bg !bg-slate-950">
+  <div class="blob w-96 h-96 bg-rose-600/20 top-0 -left-20 animate-blob"></div>
+  <div class="blob w-96 h-96 bg-blue-600/20 bottom-0 -right-20 animate-blob [animation-delay:2s]"></div>
+  <div class="blob w-96 h-96 bg-purple-600/20 top-1/2 left-1/3 animate-blob [animation-delay:4s]"></div>
+</div>
+
+<nav class="glass-nav !bg-black/20 !border-white/10">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <h2 class="text-xl font-black text-rose-500 tracking-tighter">SafeTicket</h2>
+      <div class="hidden md:flex items-center gap-6">
+        <a routerLink="/dashboard" routerLinkActive="text-rose-500 font-bold" class="text-sm text-slate-400 hover:text-rose-500 transition-colors">Eventos</a>
+        <a routerLink="/my-tickets" routerLinkActive="text-rose-500 font-bold" class="text-sm text-slate-400 hover:text-rose-500 transition-colors">Mis Entradas</a>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <button (click)="logout()" class="hidden md:flex text-sm font-bold text-slate-500 hover:text-red-500 transition-colors items-center gap-2">
+        <span>SALIR</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </button>
+
+      <!-- Mobile Menu Toggle -->
+      <button (click)="showMobileMenu.set(!showMobileMenu())" class="md:hidden p-2 text-slate-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path *ngIf="!showMobileMenu()" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          <path *ngIf="showMobileMenu()" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Content -->
+  @if (showMobileMenu()) {
+    <div class="md:hidden glass-nav !bg-slate-900/80 p-6 space-y-4 animate-in slide-in-from-top duration-300">
+      <a routerLink="/dashboard" class="block text-lg font-bold text-white">Eventos</a>
+      <a routerLink="/my-tickets" class="block text-lg font-bold text-white">Mis Entradas</a>
+      <hr class="border-white/10">
+      <button (click)="logout()" class="w-full text-left text-lg font-bold text-red-500">Cerrar Sesión</button>
+    </div>
+  }
+</nav>
+
+<div class="min-h-screen p-6 md:p-8 lg:p-16 relative z-10">
+  <header class="mb-10 md:mb-12">
+    <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">Mis Entradas</h1>
+    <p class="text-slate-400 font-medium">Gestiona tus accesos y genera códigos de entrada seguros.</p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    @for (t of tickets(); track t.id) {
+      <app-glass-card [radius]="40" 
+                      backgroundColor="rgba(255, 255, 255, 0.05)"
+                      class="animate-in zoom-in duration-500 group hover:!border-rose-500/50 transition-all">
+         <div class="p-8 space-y-6">
+            <div class="flex justify-between items-start">
+               <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
+                     [class.bg-green-500/20]="!t.is_used" [class.text-green-400]="!t.is_used"
+                     [class.bg-white/10]="t.is_used" [class.text-slate-500]="t.is_used">
+                  {{ t.is_used ? 'Usado' : 'Válido' }}
+               </span>
+               <p class="text-[10px] font-bold text-slate-500 uppercase font-mono">#{{ t.ticket_code.substring(0,8) }}</p>
+            </div>
+            
+            <div>
+               <h3 class="text-2xl font-black text-white leading-tight group-hover:text-rose-400 transition-colors">{{ getEventName(t.event_id) }}</h3>
+               <p class="text-sm text-slate-400 font-medium mt-1">Precio pagado: $ {{ t.price_paid }}</p>
+            </div>
+
+            @if (!t.is_used) {
+              <div class="bg-white/5 backdrop-blur-md p-6 rounded-[32px] border border-white/10 border-dashed">
+                 @if (!qrData()[t.ticket_code]) {
+                   <div class="text-center py-10">
+                      <button (click)="generateQR(t.ticket_code)" class="bg-rose-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-950/20">
+                        GENERAR CÓDIGO QR
+                      </button>
+                   </div>
+                 }
+                 
+                 @if (qrData()[t.ticket_code]; as qr) {
+                   <div class="text-center space-y-4">
+                      <div class="bg-white/10 p-4 rounded-2xl inline-block shadow-inner border border-white/10">
+                         <div class="w-40 h-40 bg-slate-900 rounded-xl flex items-center justify-center text-rose-500 font-mono text-4xl font-black tracking-widest">
+                            {{ qr.dynamic_token }}
+                         </div>
+                      </div>
+                      <p class="text-xs font-bold text-slate-500 uppercase tracking-widest animate-pulse">
+                        Expira en {{ qr.expires_in }}s
+                      </p>
+                   </div>
+                 }
+              </div>
+            }
+
+            @if (t.is_used) {
+              <div class="bg-white/5 p-8 rounded-[32px] text-center opacity-50">
+                 <p class="text-slate-600 font-black text-sm uppercase italic">TICKET VALIDADO</p>
+              </div>
+            }
+         </div>
+      </app-glass-card>
+    }
+  </div>
+
+  @if (tickets().length === 0) {
+    <div class="text-center py-40">
+       <p class="text-slate-600 text-xl font-medium italic">Aún no has comprado entradas.</p>
+    </div>
+  }
+</div>

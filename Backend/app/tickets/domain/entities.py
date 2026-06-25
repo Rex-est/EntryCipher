@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Float
 from shared.database.connection import Base
 from datetime import datetime
 import uuid
@@ -11,6 +11,8 @@ class Ticket(Base):
     ticket_code = Column(String, unique=True, default=lambda: str(uuid.uuid4()))
     event_id = Column(Integer, ForeignKey("events.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
+    zone_id = Column(Integer, ForeignKey("event_zones.id"), nullable=True)
+    price_paid = Column(Float, nullable=True)
     purchased_at = Column(DateTime, default=datetime.utcnow)
     is_used = Column(Boolean, default=False)
     # Semilla aleatoria que usaremos para el QR dinámico después

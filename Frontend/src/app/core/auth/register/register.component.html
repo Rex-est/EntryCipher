@@ -1,0 +1,66 @@
+<!-- Liquid Background -->
+<div class="liquid-bg">
+  <div class="blob w-[500px] h-[500px] bg-emerald-300 top-0 -left-20 animate-blob"></div>
+  <div class="blob w-[500px] h-[500px] bg-blue-300 bottom-0 -right-20 animate-blob [animation-delay:2s]"></div>
+  <div class="blob w-[500px] h-[500px] bg-sky-300 top-1/2 left-1/3 animate-blob [animation-delay:4s]"></div>
+</div>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+  <app-glass-card [radius]="40" class="max-w-md w-full">
+    <div class="p-10 space-y-8">
+      <div>
+        <h2 class="text-center text-4xl font-black text-slate-900 tracking-tighter">
+          Únete a SafeTicket
+        </h2>
+        <p class="mt-2 text-center text-sm text-slate-500 font-medium uppercase tracking-widest">
+          Tu entrada segura a los mejores eventos
+        </p>
+      </div>
+
+      <form class="mt-8 space-y-4" (ngSubmit)="onRegister()">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">Nombre Completo</label>
+          <input name="full_name" type="text" required [(ngModel)]="user.full_name"
+            class="w-full px-6 py-3 bg-white/40 border-none rounded-2xl focus:ring-4 ring-emerald-100 transition-all font-medium text-slate-800"
+            placeholder="Ej: Juan Pérez">
+        </div>
+        
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">DNI</label>
+          <input name="dni" type="text" required [(ngModel)]="user.dni"
+            class="w-full px-6 py-3 bg-white/40 border-none rounded-2xl focus:ring-4 ring-emerald-100 transition-all font-medium text-slate-800"
+            placeholder="Número de documento">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">Email</label>
+          <input name="email" type="email" required [(ngModel)]="user.email"
+            class="w-full px-6 py-3 bg-white/40 border-none rounded-2xl focus:ring-4 ring-emerald-100 transition-all font-medium text-slate-800"
+            placeholder="tu@email.com">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase ml-4 mb-1">Contraseña</label>
+          <input name="password" type="password" required [(ngModel)]="user.password"
+            class="w-full px-6 py-3 bg-white/40 border-none rounded-2xl focus:ring-4 ring-emerald-100 transition-all font-medium text-slate-800"
+            placeholder="Mínimo 8 caracteres">
+        </div>
+
+        <div *ngIf="errorMessage" class="bg-red-500/10 p-4 rounded-xl text-red-600 text-xs font-bold text-center border border-red-500/20 backdrop-blur-md">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" [disabled]="loading"
+          class="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 uppercase tracking-widest disabled:opacity-50">
+          {{ loading ? 'Creando cuenta...' : 'Crear mi Cuenta' }}
+        </button>
+
+        <div class="text-center mt-6">
+          <a routerLink="/login" class="font-bold text-emerald-600 hover:text-emerald-700 text-sm transition-colors">
+            ¿Ya tienes cuenta? Inicia sesión aquí →
+          </a>
+        </div>
+      </form>
+    </div>
+  </app-glass-card>
+</div>
