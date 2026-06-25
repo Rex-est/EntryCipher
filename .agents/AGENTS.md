@@ -38,6 +38,13 @@ Eres el ingeniero de software principal para **SafeTicket**, un sistema seguro d
 * **Semántica y SEO:** Usa HTML5 semántico (`<header>`, `<main>`, `<section>`, `<article>`, `<footer>`) y asegura etiquetas de título y meta descripciones adecuadas.
 * **Pruebas:** Cada componente nuevo o modificado debe tener sus correspondientes pruebas unitarias en Vitest.
 
+
 ### 3. CI/CD (GitHub Actions)
 * Asegúrate de que los cambios no rompan la pipeline definida en `.github/workflows/ci.yml`.
 * Toda la integración de backend y frontend debe ser probada localmente antes de confirmar cambios.
+
+## 🌿 Flujo de Ramas (Branching Workflow)
+Para cada cambio:
+1. Crear una rama de característica (`feature branch`).
+2. Fusionar la rama `feature` en `dev`.
+3. Fusionar `dev` en `main`.
