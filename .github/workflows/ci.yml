@@ -141,16 +141,16 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-       - name: 🔍 ZAP Baseline Scan
-         uses: zaproxy/action-baseline@v0.14.0
-         with:
-           # APUNTAR A LA URL DE TU ENTORNO DEV
-           target: 'https://entrycipher-front-dev.onrender.com'
-           rules_file_name: 'zap-rules.tsv'
-           fail_action: false    # No detiene el pipeline por advertencias
-           artifact_name: 'zap-report'
+      - name: 🔍 ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          # APUNTAR A LA URL DE TU ENTORNO DEV
+          target: 'https://entrycipher-front-dev.onrender.com'
+          rules_file_name: 'zap-rules.tsv'
+          fail_action: false    # No detiene el pipeline por advertencias
+          artifact_name: 'zap-report'
 
-   deploy-prod:
+  deploy-prod:
 
     name: Deploy a Producción 👑
     needs: [dast-security] 
