@@ -61,3 +61,17 @@ python -m pytest -q
 - Los tokens JWT tienen una duración máxima de 15 minutos.
 - Cada token incluye un identificador único de sesión (`jti`).
 - Las pruebas usan configuraciones aisladas y una base SQLite local.
+## Variables de entorno en Render
+
+Antes de fusionar cambios que dependan de configuración sensible, se deben registrar las variables de entorno en el panel de Render para ambos servicios backend:
+
+- `entrycipher-backend`
+- `entrycipher-backend-dev`
+
+Variables requeridas:
+
+```text
+DATABASE_URL
+JWT_SECRET_KEY
+JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES
