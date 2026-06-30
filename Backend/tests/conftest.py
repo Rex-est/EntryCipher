@@ -1,3 +1,13 @@
+import os
+
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
+os.environ.setdefault(
+    "JWT_SECRET_KEY",
+    "test-secret-key-only-for-automated-tests-1234567890"
+)
+os.environ.setdefault("JWT_ALGORITHM", "HS256")
+os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
