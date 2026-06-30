@@ -3,12 +3,18 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+*.db
+.coverage
 
 # Angular
 node_modules/
 .angular/
 dist/
 
+# Variables privadas
+.env
+.env.*
+!.env.example
+
 # Basura / Temporales
 *.zip
-.env
