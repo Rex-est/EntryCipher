@@ -1,4 +1,5 @@
 import pytest
+import time
 from app.auth.application import auth_service
 from app.auth.schemas.request import UserCreate, UserLogin
 from app.auth.domain.entities import User
@@ -45,3 +46,17 @@ def test_invalid_credentials(db):
     with pytest.raises(HTTPException) as exc:
         auth_service.authenticate_user(db, login_data)
     assert exc.value.status_code == 401
+def test_access_token_uses_fifteen_minute_expiration():
+    token = security.create_access_token({"sub": "expiration-test"})
+
+    decoded = jwt.decode(
+        token,
+        security.SECRET_KEY,
+        algorithms=[security.ALGORITHM]
+    )
+
+    remaining_seconds = decoded["exp"] - time.time()
+
+    assert security.ACCESS_TOKEN_EXPIRE_MINUTES == 15
+    assert remaining_seconds <= 15 * 60
+    assert remaining_seconds > 14 * 60
