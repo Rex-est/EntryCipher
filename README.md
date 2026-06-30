@@ -75,3 +75,13 @@ DATABASE_URL
 JWT_SECRET_KEY
 JWT_ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES
+```
+
+Valores recomendados:
+
+```text
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=15
+```
+
+`JWT_SECRET_KEY` debe tener al menos 32 caracteres. Los valores reales de `DATABASE_URL` y `JWT_SECRET_KEY` deben configurarse únicamente en Render y nunca incluirse en archivos versionados, `render.yaml` o Pull Requests.
