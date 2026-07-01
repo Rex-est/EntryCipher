@@ -1,18 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from shared.database.connection import engine, Base
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
-from app.auth.domain.entities import User 
+from shared.database.connection import engine, Base
+from shared.security.rate_limit import limiter
+
+from app.auth.domain.entities import User
 from app.events.domain.entities import Event, EventZone, PricingTier
 from app.tickets.domain.entities import Ticket
+
 
 origins = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
     "http://localhost:5173",
-    "https://entrycipher-front-prod.onrender.com", 
-    "https://entrycipher-frontend.onrender.com",   
+    "https://entrycipher-front-prod.onrender.com",
+    "https://entrycipher-frontend.onrender.com",
 ]
+
 
 app = FastAPI(
     title="SafeTicket Enterprise API",
@@ -20,9 +26,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
+)
+
+
 @app.on_event("startup")
 def startup_event():
     Base.metadata.create_all(bind=engine)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,9 +46,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/health", tags=["Health Check"])
 def health_check():
-    return {"status": "OK", "message": "El motor de SafeTicket está en línea."}
+    return {
+        "status": "OK",
+        "message": "El motor de SafeTicket está en línea."
+    }
+
 
 from app.auth.presentation.routes import router as auth_router
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Autenticación"])
